@@ -5,17 +5,19 @@ import Menu from "./components/Menu/Menu";
 import { useState } from "react";
 
 export interface MenuTypes {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
+  id: string; 
+  title: string; 
+  description: string; 
+  price: number; 
 }
 
+// тип для данных приходящих из формы (id + количество)
 export interface FoodTypes {
   id: string;
-  amount: string;
+  amount: number;
 }
 
+// тип для элемента заказа
 export type OrderTypes = MenuTypes & { amount: number };
 
 function App() {
@@ -46,23 +48,28 @@ function App() {
     },
   ];
 
+  // состояние корзины
   const [order, setOrder] = useState<OrderTypes[]>([]);
 
+  // логика добавления в корзину
   const addOrderHandler = (params: FoodTypes) => {
     const { id, amount } = params;
-    const food = meals.find((item) => item.id === id);
-    if (!food) return;
 
+    // находим блюдо по id
+    const food = meals.find((item) => item.id === id);
+    if (!food) return; // если не нашли — выходим
+
+    // проверяем, есть ли уже это блюдо в корзине
     const existingFood = order.find((item) => item.id === id);
 
     if (!existingFood) {
-      const newFood = { ...food, amount: Number(amount) };
+      // если блюда нет в корзине — добавляем новое
+      const newFood: OrderTypes = { ...food, amount };
       setOrder((prev) => [...prev, newFood]);
     } else {
+      // если блюдо уже есть в корзине — увеличиваем количество
       const updatedOrder = order.map((item) =>
-        item.id === id
-          ? { ...item, amount: item.amount + Number(amount) }
-          : item
+        item.id === id ? { ...item, amount: item.amount + amount } : item
       );
       setOrder(updatedOrder);
     }

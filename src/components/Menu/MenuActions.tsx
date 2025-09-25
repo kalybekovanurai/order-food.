@@ -3,19 +3,29 @@ import Plus from "../UI/Plus";
 import Button from "../UI/Button";
 import type { FoodTypes } from "../../App";
 
-function MenuActions(props: {
-  onAdd: (params: FoodTypes) => void;
+// Типизация пропсов
+type MenuActionsProps = {
+  onAdd: (food: FoodTypes) => void;
   id: string;
-}) {
+};
+
+function MenuActions(props: MenuActionsProps) {
   const { onAdd, id } = props;
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const amount = inputRef.current?.value || "1"; 
-    const food: FoodTypes = { amount, id };
+    // Берём значение из input, преобразуем в число (строка → number)
+    const amount = Number(inputRef.current?.value || 1);
 
+    // Формируем объект по типу FoodTypes
+    const food: FoodTypes = {
+      amount,
+      id,
+    };
+
+    // Передаём в родительский компонент
     onAdd(food);
   };
 
