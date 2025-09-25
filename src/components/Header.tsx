@@ -1,23 +1,21 @@
-import Button from "./UI/Button";
+import Basket from "./Basket";
+import type { OrderTypes } from "../App";
 
+function Header(props: { countOfFood: OrderTypes[] }) {
+  const { countOfFood } = props;
 
-function Header() {
+  const getBasketFoodCount = () => {
+    return countOfFood.reduce((acc, item) => acc + item.amount, 0);
+  };
+
   return (
-    <header>
-      {/* Верхняя панель */}
-      <div className="flex items-center justify-between bg-[#8A2B06] px-8 py-4">
-        <h1 className="text-white text-2xl font-bold">ReactMeals</h1>
-        <Button className="bg-[#5A1F08] rounded-full px-4 py-2" variant="primary" size="small">
-            <div className="flex gap-2">
-                <span className="text-white">🛒 Your Cart</span>
-          <span className="bg-[#8A2B06] px-3 py-1 rounded-full text-white text-sm">
-            7
-          </span> 
-            </div>
-         
-        </Button>
+    <header className="bg-[#8A2B06] w-full fixed z-10">
+      <div className="flex items-center justify-between text-white py-[21px] w-[1000px] m-auto">
+        <h1 className="text-3xl font-bold">ReactMeals</h1>
+        <Basket countOfFood={getBasketFoodCount()} />
       </div>
     </header>
   );
 }
+
 export default Header;
