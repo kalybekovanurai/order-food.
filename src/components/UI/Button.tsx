@@ -22,7 +22,7 @@ const variantClasses = {
 
   outline: {
     default:
-      "bg-transparent text-[#8a2b06] border border-[#8a2b06] cursor-pointer min-h-[38px]",
+      "bg-transparent text-[#8a2b06] border border-[#8a2b06] cursor-pointer min-h-[38px] ",
     hover: "hover:bg-[#8a2b06] hover:text-white",
     active: "active:bg-[#993109] active:scale-[1.01]",
   },
@@ -30,7 +30,7 @@ const variantClasses = {
 
 const buttonSizeClasses = {
   small: "rounded-md px-[14px] py-[8px]",
-  large: "rounded-3xl px-[16px] py-[10px]",
+  large: "rounded-3xl px-[32px] py-[10px]",
 };
 
 function Button(props: ButtonCommonProps) {
@@ -43,6 +43,7 @@ function Button(props: ButtonCommonProps) {
   return (
     <button
       className={twMerge(
+
         buttonClasses.default,
         buttonClasses.hover,
         buttonClasses.active,

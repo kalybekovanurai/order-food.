@@ -1,10 +1,18 @@
 import BasketIcon from "./UI/BasketIcon";
 
-function Basket(props: { countOfFood: number }) {
-  const { countOfFood } = props;
+interface BasketProps{
+  countOfFood:number;
+  showOrder:()=>void;
+}
+
+function Basket(props: BasketProps) {
+  const { countOfFood, showOrder } = props;
 
   return (
-    <div className="bg-[#5A1F08] rounded-4xl px-[17px] py-[12px] flex items-center gap-[24px] text-white cursor-pointer">
+    <div
+      onClick={showOrder}
+      className="bg-[#5A1F08] rounded-4xl px-[17px] py-[12px] flex items-center gap-[24px] text-white cursor-pointer"
+    >
       <div className="flex items-center gap-[12px]">
         <BasketIcon />
         <p>Your cart</p>

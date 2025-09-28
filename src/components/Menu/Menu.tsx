@@ -1,9 +1,10 @@
-import type { FoodTypes, MenuTypes } from "../../App";
+import type {  MenuTypes } from "../../App";
 import MenuItem from "./MenuItem";
+type MenuInnerTypes = MenuTypes;
 
 function Menu(props: {
-  menu: MenuTypes[];
-  onAdd: (params: FoodTypes) => void;
+  menu: MenuInnerTypes[];
+  onAdd: (params: MenuTypes) => void;
 }) {
   const { menu, onAdd } = props;
 

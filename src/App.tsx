@@ -3,22 +3,16 @@ import Header from "./components/Header";
 import Summary from "./components/Summary";
 import Menu from "./components/Menu/Menu";
 import { useState } from "react";
+import Orders from "./orders/Orders";
+import Modal from "./components/UI/Modal";
 
 export interface MenuTypes {
-  id: string; 
-  title: string; 
-  description: string; 
-  price: number; 
-}
-
-// тип для данных приходящих из формы (id + количество)
-export interface FoodTypes {
   id: string;
-  amount: number;
+  title: string;
+  description: string;
+  price: number;
+  amount?: string;
 }
-
-// тип для элемента заказа
-export type OrderTypes = MenuTypes & { amount: number };
 
 function App() {
   const meals: MenuTypes[] = [
@@ -49,37 +43,96 @@ function App() {
   ];
 
   // состояние корзины
-  const [order, setOrder] = useState<OrderTypes[]>([]);
+  const [order, setOrder] = useState<MenuTypes[]>([]);
+  const [modal, setModal] = useState(false);
+
+  const modalHandler = () => {
+    setModal((prevState) => !prevState);
+  };
 
   // логика добавления в корзину
-  const addOrderHandler = (params: FoodTypes) => {
-    const { id, amount } = params;
+  const addOrderHandler = (params: MenuTypes) => {
+    const { id, title, description, price, amount } = params;
+    const existingOrder = order.find((item) => item.id === id);
 
-    // находим блюдо по id
-    const food = meals.find((item) => item.id === id);
-    if (!food) return; // если не нашли — выходим
+    const totalAmount = order.reduce(
+      (sum, item) => sum + Number(item.amount || 0),
+      0
+    );
+    if (totalAmount >= 20) return;
 
-    // проверяем, есть ли уже это блюдо в корзине
-    const existingFood = order.find((item) => item.id === id);
-
-    if (!existingFood) {
-      // если блюда нет в корзине — добавляем новое
-      const newFood: OrderTypes = { ...food, amount };
-      setOrder((prev) => [...prev, newFood]);
+    if (!existingOrder) {
+      setOrder([
+        ...order,
+        {
+          id,
+          title,
+          description,
+          price,
+          amount: amount ? amount : "1", 
+        },
+      ]);
     } else {
-      // если блюдо уже есть в корзине — увеличиваем количество
-      const updatedOrder = order.map((item) =>
-        item.id === id ? { ...item, amount: item.amount + amount } : item
+      const updatedOrders = order.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              amount: String(
+                Number(item.amount ? item.amount : 0) +
+                  Number(amount ? amount : 1)
+              ),
+            }
+          : item
       );
-      setOrder(updatedOrder);
+      setOrder(updatedOrders);
     }
+  };
+
+  const minusZakaz = (id: string) => {
+    const updatedOrders = order
+      .map((item) => {
+        if (item.id === id) {
+          const currentAmount = Number(item.amount || 0);
+          return { ...item, amount: String(currentAmount - 1) };
+        }
+        return item;
+      })
+      .filter((item) => Number(item.amount) > 0);
+
+    setOrder(updatedOrders);
+  };
+
+  const plusZakaz = (id: string) => {
+    const totalAmount = order.reduce(
+      (sum, item) => sum + Number(item.amount || 0),
+      0
+    );
+    if (totalAmount >= 20) return;
+
+    const updatedOrders = order.map((item) => {
+      if (item.id === id) {
+        const currentAmount = Number(item.amount || 0);
+        return { ...item, amount: String(currentAmount + 1) };
+      }
+      return item;
+    });
+
+    setOrder(updatedOrders);
   };
 
   return (
     <div>
-      <Header countOfFood={order} />
+      <Header countOfFood={order} showOrder={modalHandler} />
       <Summary />
       <Menu menu={meals} onAdd={addOrderHandler} />
+      <Modal isOpen={modal} onClose={modalHandler}>
+        <Orders
+          onClose={modalHandler}
+          orders={order}
+          onPlus={plusZakaz}
+          onMinus={minusZakaz}
+        />
+      </Modal>
     </div>
   );
 }

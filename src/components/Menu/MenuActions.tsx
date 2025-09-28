@@ -1,31 +1,34 @@
 import { useRef } from "react";
 import Plus from "../UI/Plus";
 import Button from "../UI/Button";
-import type { FoodTypes } from "../../App";
+import type { MenuTypes } from "../../App";
 
-// Типизация пропсов
-type MenuActionsProps = {
-  onAdd: (food: FoodTypes) => void;
+
+
+function MenuActions(props: {
+  onAdd: (food: MenuTypes) => void;
   id: string;
-};
+    title: string; 
+  description: string; 
+  price: number; 
 
-function MenuActions(props: MenuActionsProps) {
-  const { onAdd, id } = props;
+}){
+
+  const { onAdd, id, title, description, price } = props;
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Берём значение из input, преобразуем в число (строка → number)
-    const amount = Number(inputRef.current?.value || 1);
-
-    // Формируем объект по типу FoodTypes
-    const food: FoodTypes = {
-      amount,
-      id,
+const amount = inputRef?.current?.value;
+    const food = {
+     amount : amount ? amount:'1',
+     id:id,
+     title:title,
+     description:description,
+     price:price,
     };
 
-    // Передаём в родительский компонент
     onAdd(food);
   };
 
